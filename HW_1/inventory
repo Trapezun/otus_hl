@@ -1,0 +1,8 @@
+[ubuntu-servers]
+ubuntu_server ansible_host={your IP}
+
+
+
+
+
+
