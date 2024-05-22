@@ -1,0 +1,6 @@
+- name: Setup alternate SSH port
+  lineinfile:
+    dest: "/etc/ssh/sshd_config"
+    regexp: "^Port"
+    line: "Port 3333"
+  notify: "Restart sshd"

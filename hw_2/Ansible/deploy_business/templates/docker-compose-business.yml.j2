@@ -1,0 +1,24 @@
+version: '3.7'
+services:
+  web:
+    image: rip555/socialnetwork:0.0.2
+    environment:
+      JWTAuthorization__issuer: "SocialNetworkMega"
+      JWTAuthorization__audience: "SocialNetwork"
+      JWTAuthorization__encryptingKey: "sda443SDsffSD53SD45dfdj9jj3jhfh798783HKHHKHkjhfkdbjlfjfojfdsfjJLJIJLJljjiujijJIJJyUUUNVLJLHHjhkjhfkh"
+      JWTAuthorization__signingKey: "PvkdiopjljFioisdjmfopfdlsifjldsfjlksdf545"
+      ConnectionStrings__dbconnection: "Host={{DB_HOST}};Port=5432;Database=socialnetworkdb;Username=postgres;Password=pgpwd4habr"
+    ports:    
+      - "80:8080"      
+
+
+
+        
+  
+
+        
+
+        
+
+ 
+      

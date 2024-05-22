@@ -1,0 +1,8 @@
+---
+- hosts: business_servers
+  become: true
+  tasks:
+    - name: ping server
+      ping:
+
+        

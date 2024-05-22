@@ -1,0 +1,34 @@
+---
+- name: Update and upgrade apt packages
+  apt:
+    update_cache: yes
+    upgrade: yes
+
+- name: Install Nginx
+  apt:
+    name: nginx
+    state: latest
+
+# - name: unlink default  
+#   become: true
+#   shell:
+#       cmd: "unlink /etc/nginx/sites-available/default"   
+
+- name: Create reverse-proxy 
+  copy:
+    src: "reverse-proxy"
+    dest: /etc/nginx/sites-available/
+    mode: 0644
+
+- name: Enable config Nginx
+  file:
+    src: /etc/nginx/sites-available/reverse-proxy
+    path: /etc/nginx/sites-enabled/reverse-proxy
+    state: link
+
+- name: Restart Nginx
+  service:
+    name: nginx
+    state: restarted
+
+
