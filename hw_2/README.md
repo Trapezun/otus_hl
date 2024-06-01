@@ -11,8 +11,11 @@
 	 - Перейти в каталог **Terraform/servers**
       - Запустить **Terraform init**
       - Запустить **Terraform apply -var-file="./../variables.auto.tfvars"**
+
       
 Для каждой группы серверов  будет сразу запуск **ansible**, который поднимет нужное ПО для этого сервера. 
+
+В данно проекте используется  **load balancer от yandex**
 	
 
 
