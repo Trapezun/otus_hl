@@ -6,7 +6,7 @@
   template:
     src: "docker-compose-business.yml.j2"
     dest: ~/docker-compose.yml
-- name: Run container  
+- name: Run container    
   become: true
   shell:
     cmd: "docker-compose -f docker-compose.yml up -d"    

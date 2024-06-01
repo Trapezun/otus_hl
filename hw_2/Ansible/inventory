@@ -1,35 +1,8 @@
 
 
-[bastion_servers]
-bastion ansible_host=51.250.98.176 ansible_port=3333
-
-[db_servers]
-db_server ansible_host=10.129.0.36
-
-[db_servers:vars]
-ansible_ssh_common_args='-o ProxyCommand="ssh -p 3333 -W %h:%p -q ubuntu@51.250.98.176"'
 
 
-[business_servers]
-business_server_1 ansible_host=10.129.0.4
-business_server_2 ansible_host=10.129.0.23
 
-[business_servers:vars]
-DB_HOST="10.129.0.36"
-ansible_ssh_common_args='-o ProxyCommand="ssh -p 3333 -W %h:%p -q ubuntu@51.250.98.176"'
-
-
-[front_servers]
-front_server ansible_host=130.193.54.37 ansible_port=3333
-
-
-[another_ssh_servers:children]
-bastion_servers
-front_servers
-
-[docker_servers:children]
-db_servers
-business_servers
 
 
 

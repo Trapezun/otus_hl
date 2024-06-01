@@ -1,7 +1,8 @@
 version: '3.7'
 services:     
-  database:
-    image: postgres
+  database:    
+    image: mirror.gcr.io/postgres
+    restart: always
     environment:
       POSTGRES_DB: "socialnetworkdb"
       POSTGRES_USER: "postgres"

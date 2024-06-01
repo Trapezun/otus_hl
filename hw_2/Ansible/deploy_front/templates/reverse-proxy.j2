@@ -1,17 +1,19 @@
+
 # Round Robin
 upstream backend {
-	server 10.0.1.5:80;
-    server 10.0.1.27:80;
+	{% for ip in ip_addresses %}
+		server {{ ip }}:80 max_fails=2 fail_timeout=3;
+	{% endfor %}
 }
 
 server {
 	listen 80;
-	listen [::]:80;
 	server_name example.com;
 	
 	location / {
 		proxy_pass http://backend;
 	}
 }
+
 
 

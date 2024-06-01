@@ -1,3 +1,1 @@
----
-# vars file for deploy_db
-
+ansible_ssh_common_args: "-o ProxyCommand='ssh -p 3333 -W %h:%p -q ubuntu@84.252.142.109'"

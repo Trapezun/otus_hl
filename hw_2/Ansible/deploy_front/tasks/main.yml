@@ -9,16 +9,18 @@
     name: nginx
     state: latest
 
-# - name: unlink default  
-#   become: true
-#   shell:
-#       cmd: "unlink /etc/nginx/sites-available/default"   
+- name: unlink default  
+  become: true
+  ignore_errors: yes
+  shell:
+      cmd: "unlink /etc/nginx/sites-enabled/default"   
 
 - name: Create reverse-proxy 
-  copy:
-    src: "reverse-proxy"
-    dest: /etc/nginx/sites-available/
+  template:
+    src: "reverse-proxy.j2"
+    dest: /etc/nginx/sites-available/reverse-proxy
     mode: 0644
+
 
 - name: Enable config Nginx
   file:

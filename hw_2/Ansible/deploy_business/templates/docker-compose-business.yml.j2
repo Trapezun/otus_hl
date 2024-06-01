@@ -1,7 +1,8 @@
 version: '3.7'
 services:
   web:
-    image: rip555/socialnetwork:0.0.2
+    image: mirror.gcr.io/rip555/socialnetwork:0.0.2
+    restart: always
     environment:
       JWTAuthorization__issuer: "SocialNetworkMega"
       JWTAuthorization__audience: "SocialNetwork"

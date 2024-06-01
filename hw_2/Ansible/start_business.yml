@@ -1,0 +1,13 @@
+- hosts: all
+  become: true  
+  vars:  
+    ansible_ssh_common_args: -o ProxyCommand='ssh -p 3333 -W %h:%p -q ubuntu@{{ip_bastion}}'
+  roles:
+    - deploy_docker
+    
+- hosts: all
+  vars:  
+    ansible_ssh_common_args: -o ProxyCommand='ssh -p 3333 -W %h:%p -q ubuntu@{{ip_bastion}}'
+  roles:    
+    - deploy_business
+
