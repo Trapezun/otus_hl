@@ -1,6 +1,6 @@
-output "private_ip_db" {
-  value = yandex_compute_instance.db.network_interface[0].ip_address
-}
+# output "private_ip_db" {
+#   value = yandex_compute_instance.db.network_interface[0].ip_address
+# }
 
 # output "private_ips_business" {
 #   value = yandex_compute_instance.business[*].network_interface[0].ip_address  

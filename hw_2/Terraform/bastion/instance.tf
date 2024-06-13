@@ -53,11 +53,12 @@ resource "yandex_compute_instance" "bastion" {
   network_interface {
     subnet_id = yandex_vpc_subnet.private.id     
     nat = true 
+    ip_address = "10.0.1.5"
   }
 
-  provisioner "local-exec" {
-      command = "ansible-playbook -u ubuntu -i '${yandex_compute_instance.bastion.network_interface[0].nat_ip_address},' ./../../Ansible/start_bastion.yml"
-  }
+  # provisioner "local-exec" {
+  #     command = "ansible-playbook -u ubuntu -i '${yandex_compute_instance.bastion.network_interface[0].nat_ip_address},' ./../../Ansible/start_bastion.yml"
+  # }
 
 }
 

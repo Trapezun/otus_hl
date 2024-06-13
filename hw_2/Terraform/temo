@@ -1,2 +1,79 @@
-#eval "$(ssh-agent -s)"
-#ssh-add ~/.ssh/id_ed25519
+eval "$(ssh-agent -s)"
+ssh-add ~/.ssh/id_ed25519
+
+terraform plan -var-file="./../variables.auto.tfvars"
+
+ansible-playbook -u ubuntu -i '84.201.155.93,' ./../../Ansible/start_bastion.yml
+
+ansible-playbook -u ubuntu -i '10.129.0.6,' -e "ip_bastion=84.201.155.93" ./../../Ansible/start_db.yml
+
+ansible-playbook -u ubuntu -i '10.0.1.19,10.0.1.33,' -e '{ip_bastion: 51.250.97.153, "ip_addresses": ["10.0.1.5", "10.0.1.27"]}' ./../../Ansible/start_front.yml
+
+ansible-playbook -u ubuntu -i '10.0.1.5, 10.0.1.27,' -e 'ip_bastion=51.250.97.153 DB_HOST=10.0.1.8' ./../../Ansible/start_business.yml
+
+resource "yandex_compute_instance" "business" { 
+  count = 2
+  name = "mini-instance-business-${count.index + 1}"
+	platform_id = "standard-v1" # тип процессора (Intel Broadwell)
+
+  metadata = {
+    ssh-keys = "ubuntu:${file("./../id_rsa.pub")}"
+  }
+
+  resources {
+    core_fraction = 5 # Гарантированная доля vCPU
+    cores  = 2 # vCPU
+    memory = 1 # RAM
+  }
+
+  boot_disk {
+    initialize_params {
+      image_id = data.yandex_compute_image.last_ubuntu.id
+    }
+  }
+  network_interface {
+    subnet_id = data.yandex_vpc_subnet.private.id  
+    #nat=true
+  }
+
+  provisioner "local-exec" {           
+      command = "ansible-playbook -u ubuntu -i '${yandex_compute_instance.business.network_interface[0].ip_address},' -e 'ip_bastion={ip_bastion}, DB_HOST=${yandex_compute_instance.db.network_interface[0].ip_address}' ./../../Ansible/start_business.yml"
+  }
+
+}
+
+
+resource "yandex_compute_instance" "front" { 
+
+  count = 2
+  name = "mini-instance-front-${count.index + 1}"
+	platform_id = "standard-v1" # тип процессора (Intel Broadwell)
+
+  metadata = {
+    ssh-keys = "ubuntu:${file("./../id_rsa.pub")}"
+  }
+
+  resources {
+    core_fraction = 5 # Гарантированная доля vCPU
+    cores  = 2 # vCPU
+    memory = 1 # RAM
+  }
+
+  boot_disk {
+    initialize_params {
+      image_id = data.yandex_compute_image.last_ubuntu.id
+    }
+  }
+  network_interface {
+    subnet_id = data.yandex_vpc_subnet.private.id  
+    nat = true 
+  }
+
+    provisioner "local-exec" {           
+      #command = "ansible-playbook -u ubuntu -i '${yandex_compute_instance.front.network_interface[0].ip_address}' -e '{ip_bastion:{ip_bastion}, "ip_addresses": ["10.0.1.5", "10.0.1.27"]}' ./../../Ansible/start_front.yml"
+      command = "ansible-playbook -u ubuntu -i '${yandex_compute_instance.front.network_interface[0].ip_address}' -e '{ip_bastion:{ip_bastion}, "ip_addresses": [${yandex_compute_instance.business.network_interface[0].ip_address}]}' ./../../Ansible/start_front.yml"
+  }
+  
+}
+
+
