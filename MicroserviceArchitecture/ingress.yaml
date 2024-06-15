@@ -1,0 +1,36 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  namespace: otus
+  annotations:
+    kubernetes.io/ingress.class: "nginx"
+    nginx.ingress.kubernetes.io/affinity: "cookie"
+    nginx.ingress.kubernetes.io/use-gzip: "true"
+    nginx.ingress.kubernetes.io/proxy-body-size: 200m
+    nginx.ingress.kubernetes.io/proxy-connect-timeout: "300"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "300"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "300"
+
+    # эта аннотация указывает на то, что путь должен быть переписан, сохраняя только вторую часть пути после /otusapp/{student name}.
+    #nginx.ingress.kubernetes.io/rewrite-target: /$2
+
+  name: ingress-nginx-http
+spec: 
+  rules:
+  - host: arch.homework
+    http:
+      paths:      
+        # - path: /otusapp/([^/]+)/(.*)
+        #   pathType: ImplementationSpecific          
+        #   backend:
+        #     service:
+        #       name: apimobile
+        #       port:
+        #         number: 8080
+        - path: /
+          pathType: ImplementationSpecific
+          backend:
+            service:
+              name: apimobile
+              port:
+                number: 8080  
