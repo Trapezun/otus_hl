@@ -19,14 +19,7 @@ spec:
   rules:
   - host: arch.homework
     http:
-      paths:      
-        # - path: /otusapp/([^/]+)/(.*)
-        #   pathType: ImplementationSpecific          
-        #   backend:
-        #     service:
-        #       name: apimobile
-        #       port:
-        #         number: 8080
+      paths:            
         - path: /
           pathType: ImplementationSpecific
           backend:

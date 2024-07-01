@@ -1,0 +1,101 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: apimobile
+  namespace: otus
+  labels:
+    app: apimobile
+spec: 
+  replicas: {{ .Values.replicaCount }}
+  minReadySeconds: 15
+  revisionHistoryLimit: 5
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 0
+      maxSurge: 1
+  selector:
+    matchLabels:
+      app: apimobile  
+  template:
+    metadata:
+      labels:
+        app: apimobile           
+    spec:    
+
+      volumes:
+      - name: pfdata-storage
+        persistentVolumeClaim:
+          claimName: {{ .Values.pvClaimName }}
+    
+      containers:
+      - image: "{{ .Values.appImage }}:{{ .Values.appVersion }}"
+        ports:
+        - containerPort: 8080
+        imagePullPolicy: IfNotPresent
+        name: apimobile
+ 
+        volumeMounts:
+          - mountPath: "/app/storage"
+            name: pfdata-storage
+            subPath: apimobile
+         
+
+        env:       
+          - name: ConnectionStrings__dbconnection
+            valueFrom:
+              secretKeyRef:
+                name: app-secret
+                key: dbConnectionString
+
+          - name: ConnectionStrings__redisconnection
+            valueFrom:
+              configMapKeyRef:
+                name: app-config
+                key: ConnectionStringsRedis
+
+
+          - name: JWTAuthorization__issuer
+            valueFrom:
+              secretKeyRef:
+                name: app-secret
+                key: jwtAuthorizationIssuer
+
+          - name: JWTAuthorization__audience
+            valueFrom:
+              secretKeyRef:
+                name: app-secret
+                key: jwtAuthorizationAudience
+
+          - name: JWTAuthorization__encryptingKey
+            valueFrom:
+              secretKeyRef:
+                name: app-secret
+                key: jwtAuthorizationEncryptingKey
+
+          - name: JWTAuthorization__signingKey
+            valueFrom:
+              secretKeyRef:
+                name: app-secret
+                key: jwtAuthorizationSigningKey
+
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 8080
+            scheme: HTTP            
+        livenessProbe:
+          initialDelaySeconds: 30
+          httpGet:
+            path: /health
+            port: 8080
+            scheme: HTTP   
+        startupProbe:    
+          initialDelaySeconds: 10
+          failureThreshold: 200
+          periodSeconds: 10      
+          httpGet:
+            path: /health
+            port: 8080
+            scheme: HTTP  
+            

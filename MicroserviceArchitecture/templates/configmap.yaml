@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: app-config
+data:
+  ConnectionStringsRedis: "otus-project-redis-master:6379,allowAdmin=true,abortConnect=false"
+  

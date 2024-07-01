@@ -1,0 +1,22 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: migrate-db
+spec:
+  backoffLimit: 2
+  completions: 1
+  ttlSecondsAfterFinished: 1200
+  activeDeadlineSeconds: 2400
+  template:
+    spec:
+      containers:
+        - name: migration
+          image: "{{ .Values.appImage }}:{{ .Values.appVersion }}"
+          env:
+          - name: ConnectionStrings__dbconnection
+            valueFrom:
+              secretKeyRef:
+                name: app-secret
+                key: dbConnectionString           
+          command: ["dotnet", "SocialNetwork.dll", "migrate"]  # команда для выполнения миграций
+      restartPolicy: Never

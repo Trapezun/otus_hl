@@ -1,0 +1,41 @@
+
+replicaCount: 1
+
+appVersion: 0.1.2
+appImage: rip555/socialnetwork
+
+
+storageClassName: local-storage-otus
+persistentVolumeName: local-pv-otus
+pvClaimName: local-pv-claim-otus
+
+encryptedDbConnectionString: SG9zdD1vdHVzLXByb2plY3QtcG9zdGdyZXNxbDtQb3J0PTU0MzI7RGF0YWJhc2U9c29jaWFsbmV0d29ya2RiO1VzZXJuYW1lPXBvc3RncmVzO1Bhc3N3b3JkPXBncHdkNGhhYnI=
+
+
+postgresql:
+  auth:
+    existingSecret: app-secret    
+    database: socialnetworkdb
+
+  primary:
+    persistence:
+      enabled: true    
+      existingClaim: local-pv-claim-otus      
+      accessModes:
+        - ReadWriteOnce      
+
+redis:
+  architecture: standalone
+  auth:
+    enabled: false
+  master:
+    persistence:
+      enabled: true
+      subPath: redisdb
+      existingClaim: local-pv-claim-otus      
+      size: 1Gi
+      accessModes:
+        - ReadWriteOnce       
+
+
+        
